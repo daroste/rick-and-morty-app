@@ -49,6 +49,13 @@ prevButton.addEventListener('click', () => {
   }
 });
 
+searchBar.addEventListener('submit', event => {
+  event.preventDefault();
+  console.log('Hallo');
+  const queryInput = document.querySelector('[data-js="query-input"]');
+  searchQuery = queryInput.value.toLowerCase();
+  console.log(document.querySelector('[data-js="query-input"]'));
+});
 fetchCharacters();
 
 createCharacterCard(CharacterData);

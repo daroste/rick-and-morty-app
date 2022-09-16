@@ -20,29 +20,35 @@ let searchQuery = '';
 const fetchCharacters = async () => {
   cardContainer.innerHTML = '';
   try {
-    const result = await fetch('https://rickandmortyapi.com/api/character');
+    const result = await fetch(
+      `https://rickandmortyapi.com/api/character/?page=${page}`,
+    );
     const data = await result.json();
     data.results.forEach(element => {
       console.log(data.results);
       cardContainer.append(createCharacterCard(element));
     });
+    maxPage = data.info.pages;
+    pagination.textContent = `${page} / ${maxPage}`;
   } catch (error) {
     console.error(error);
   }
 };
 
-fetchCharacters();
-/* function fetchCharacters() {
-  fetch('https://rickandmortyapi.com/api/character')
-    .then(response => response.json())
-    .then(data => {
-      data.results.forEach(element => {
-        console.log(data.results);
-        cardContainer.append(createCharacterCard(element));
-      });
-    });
-} */
+nextButton.addEventListener('click', () => {
+  if (page < maxPage) {
+    page += 1;
+    fetchCharacters();
+  }
+});
 
-/* cardContainer.append(createCharacterCard()); */
+prevButton.addEventListener('click', () => {
+  if (page > 1) {
+    page -= 1;
+    fetchCharacters();
+  }
+});
+
+fetchCharacters();
 
 createCharacterCard(CharacterData);

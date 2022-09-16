@@ -1,4 +1,7 @@
 export function createCharacterCard(characterData) {
+  if (characterData.episode === undefined) {
+    return null;
+  }
   const card = document.createElement('li');
   card.classList.add('card');
   card.innerHTML = `<div class="card__image-container">

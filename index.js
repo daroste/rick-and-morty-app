@@ -16,10 +16,6 @@ let maxPage = 1;
 let page = 4;
 let searchQuery = '';
 
-// create navigation
-const prevButton = createButton();
-navigation.append(prevButton);
-
 // create fetchCharacters function
 
 const fetchCharacters = async () => {
@@ -40,16 +36,22 @@ const fetchCharacters = async () => {
   }
 };
 
+// create navigation
+const prevButton = createButton(() => {
+  // Hier geben wir die Funktion mit, die der Eventlistener ausführen soll.
+  // Weil diese Callback-Funktion hier in der index.js definiert ist, kann
+  // sie wohl auf die Variable 'page' zugreifen.
+  if (page > 1) {
+    console.log('prev clicked');
+    page -= 1;
+    fetchCharacters();
+  }
+});
+navigation.append(prevButton);
+
 /* nextButton.addEventListener('click', () => {
   if (page < maxPage) {
     page += 1;
-    fetchCharacters();
-  }
-}); */
-
-/* prevButton.addEventListener('click', () => {
-  if (page > 1) {
-    page -= 1;
     fetchCharacters();
   }
 }); */
@@ -65,4 +67,4 @@ fetchCharacters();
 
 createCharacterCard(CharacterData);
 
-export {page};
+export {page, fetchCharacters};

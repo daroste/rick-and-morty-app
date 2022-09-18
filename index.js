@@ -30,6 +30,11 @@ const fetchCharacters = async () => {
     updatePage(); // Hier war mal: pagination.textContent = `${page} / ${maxPage}`;
   } catch (error) {
     console.error(error);
+    // Könnte so eine Fehlermeldung ausgegeben werden?:
+    const errorMessage = document.createElement('li');
+    errorMessage.textContent = `Your search for '${searchQuery}' did not return any results.`;
+    cardContainer.append(errorMessage);
+    searchQuery = '';
   }
 };
 

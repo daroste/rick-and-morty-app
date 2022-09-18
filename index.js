@@ -1,12 +1,13 @@
 import {createCharacterCard} from './components/card/card.js';
 import {createButton} from './components/nav-button/nav-button.js';
 import {createPagination} from './components/nav-pagination/nav-pagination.js';
+import {createSearchBar} from './components/search-bar/search-bar.js';
 
 const cardContainer = document.querySelector('[data-js="card-container"]');
 const searchBarContainer = document.querySelector(
   '[data-js="search-bar-container"]',
 );
-const searchBar = document.querySelector('[data-js="search-bar"]');
+// const searchBar = document.querySelector('[data-js="search-bar"]');
 const navigation = document.querySelector('[data-js="navigation"]');
 
 // States
@@ -15,7 +16,6 @@ let page = 1;
 let searchQuery = '';
 
 // create fetchCharacters function
-
 const fetchCharacters = async () => {
   cardContainer.innerHTML = '';
   try {
@@ -63,20 +63,25 @@ function updatePage() {
   pagination.textContent = `${page} / ${maxPage}`;
 }
 
-// Hier wird mit createButton und der Callback-Function der next-Button erzeugt und in die Navigation eingefügt.
+// Hier wird mit createButton und der passenden Callback-Function der next-Button erzeugt und in die Navigation eingefügt.
 navigation.append(createButton(nextNavigation));
 
 // --- END NAVIGATION
 
-searchBar.addEventListener('submit', event => {
+// CREATE SEARCH BAR
+
+function onSubmit(event) {
   event.preventDefault();
   page = 1;
-  const queryInput = document.querySelector('[data-js="query-input"]');
-  searchQuery = queryInput.value.toLowerCase();
+  searchQuery = event.target.elements.query.value.toLowerCase();
   fetchCharacters();
-});
+}
+
+//const searchBarTest = createSearchBar(onSubmit);
+searchBarContainer.append(createSearchBar(onSubmit));
+
+// --- END SEARCH BAR
+
 fetchCharacters();
 
 createCharacterCard(CharacterData);
-
-export {page, fetchCharacters};

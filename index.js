@@ -1,27 +1,43 @@
 import {createCharacterCard} from './components/card/card.js';
 import {createButton} from './components/nav-button/nav-button.js';
+import {createPagination} from './components/nav-pagination/nav-pagination.js';
+import {createSearchBar} from './components/search-bar/search-bar.js';
 
 const cardContainer = document.querySelector('[data-js="card-container"]');
 const searchBarContainer = document.querySelector(
   '[data-js="search-bar-container"]',
 );
-const searchBar = document.querySelector('[data-js="search-bar"]');
 const navigation = document.querySelector('[data-js="navigation"]');
-// const prevButton = document.querySelector('[data-js="button-prev"]');
-// const nextButton = document.querySelector('[data-js="button-next"]');
-// const pagination = document.querySelector('[data-js="pagination"]');
 
 // States
 let maxPage = 1;
-let page = 4;
+let page = 1;
 let searchQuery = '';
 
-// create navigation
-const prevButton = createButton();
+// create onClick function
+const onClick = isPre => {
+  if (isPre && page > 1) {
+    page -= 1;
+    fetchCharacters();
+  } else if (!isPre && page < maxPage) {
+    page += 1;
+    fetchCharacters();
+  }
+};
+
+// create prevButton
+const prevButton = createButton(
+  () => onClick(true),
+  'button--prev',
+  'previous',
+);
 navigation.append(prevButton);
 
-// create fetchCharacters function
+// create pagination
+const pagination = createPagination(`${page} / ${maxPage}`);
+navigation.append(pagination);
 
+// create fetchCharacters function
 const fetchCharacters = async () => {
   cardContainer.innerHTML = '';
   try {
@@ -30,39 +46,32 @@ const fetchCharacters = async () => {
     );
     const data = await result.json();
     data.results.forEach(element => {
-      //  console.log(data.results);
       cardContainer.append(createCharacterCard(element));
     });
     maxPage = data.info.pages;
-    // pagination.textContent = `${page} / ${maxPage}`;
+    pagination.textContent = `${page} / ${maxPage}`;
   } catch (error) {
     console.error(error);
   }
 };
 
-/* nextButton.addEventListener('click', () => {
-  if (page < maxPage) {
-    page += 1;
-    fetchCharacters();
-  }
-}); */
+// create nextButton
+const nextButton = createButton(() => onClick(false), 'button--next', 'next');
+navigation.append(nextButton);
 
-/* prevButton.addEventListener('click', () => {
-  if (page > 1) {
-    page -= 1;
-    fetchCharacters();
-  }
-}); */
-
-searchBar.addEventListener('submit', event => {
+// create onSubmit function
+const onSubmit = event => {
   event.preventDefault();
   page = 1;
   const queryInput = document.querySelector('[data-js="query-input"]');
   searchQuery = queryInput.value.toLowerCase();
   fetchCharacters();
-});
+};
+
+// create searchbar
+const searchBar = createSearchBar(onSubmit);
+searchBarContainer.append(searchBar);
+
 fetchCharacters();
 
 createCharacterCard(CharacterData);
-
-export {page};

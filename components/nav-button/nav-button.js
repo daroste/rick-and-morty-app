@@ -1,18 +1,10 @@
-import {page} from '../../index.js';
+export function createButton(onClick, buttonAttribute, buttonContent) {
+  const button = document.createElement('button');
+  button.classList.add('button', buttonAttribute);
+  button.setAttribute('data-js', buttonAttribute);
+  button.textContent = buttonContent;
 
-export function createButton() {
-  const prevButton = document.createElement('button');
-  prevButton.classList.add('button', 'button--prev');
-  prevButton.setAttribute('data-js', 'button-prev');
-  prevButton.textContent = 'previous';
+  button.addEventListener('click', onClick);
 
-  prevButton.addEventListener('click', onClick => {
-    if (page > 1) {
-      console.log('prev clicked');
-      page -= 1;
-      fetchCharacters();
-    }
-  });
-
-  return prevButton;
+  return button;
 }

@@ -52,6 +52,11 @@ const fetchCharacters = async () => {
     pagination.textContent = `${page} / ${maxPage}`;
   } catch (error) {
     console.error(error);
+    // Könnte so eine Fehlermeldung ausgegeben werden?:
+    const errorMessage = document.createElement('li');
+    errorMessage.textContent = `Your search for '${searchQuery}' did not return any results.`;
+    cardContainer.append(errorMessage);
+    searchQuery = '';
   }
 };
 
@@ -63,8 +68,7 @@ navigation.append(nextButton);
 const onSubmit = event => {
   event.preventDefault();
   page = 1;
-  const queryInput = document.querySelector('[data-js="query-input"]');
-  searchQuery = queryInput.value.toLowerCase();
+  searchQuery = event.target.elements.query.value.toLowerCase();
   fetchCharacters();
 };
 

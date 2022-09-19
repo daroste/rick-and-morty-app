@@ -14,6 +14,29 @@ let maxPage = 1;
 let page = 1;
 let searchQuery = '';
 
+// create onClick function
+const onClick = isPre => {
+  if (isPre && page > 1) {
+    page -= 1;
+    fetchCharacters();
+  } else if (!isPre && page < maxPage) {
+    page += 1;
+    fetchCharacters();
+  }
+};
+
+// create prevButton
+const prevButton = createButton(
+  () => onClick(true),
+  'button--prev',
+  'previous',
+);
+navigation.append(prevButton);
+
+// create pagination
+const pagination = createPagination(`${page} / ${maxPage}`);
+navigation.append(pagination);
+
 // create fetchCharacters function
 const fetchCharacters = async () => {
   cardContainer.innerHTML = '';
@@ -26,7 +49,7 @@ const fetchCharacters = async () => {
       cardContainer.append(createCharacterCard(element));
     });
     maxPage = data.info.pages;
-    updatePage(); // Hier war mal: pagination.textContent = `${page} / ${maxPage}`;
+    pagination.textContent = `${page} / ${maxPage}`;
   } catch (error) {
     console.error(error);
     // Könnte so eine Fehlermeldung ausgegeben werden?:
@@ -37,54 +60,21 @@ const fetchCharacters = async () => {
   }
 };
 
-// CREATE NAVIGATION
+// create nextButton
+const nextButton = createButton(() => onClick(false), 'button--next', 'next');
+navigation.append(nextButton);
 
-function prevNavigation() {
-  // Dies ist die Callback-Function für den prev-Button
-  if (page > 1) {
-    console.log('prev clicked');
-    page -= 1;
-    fetchCharacters();
-  }
-}
-
-function nextNavigation() {
-  // Dies ist die Callback-Function für den next-Button
-  if (page < maxPage) {
-    console.log('next clicked');
-    page += 1;
-    fetchCharacters();
-  }
-}
-
-// Hier wird createButton aufgerufen und bekommt die passende Callback-Funktionm für den prev-Button mit.
-navigation.append(createButton(prevNavigation));
-
-// Hier wird mit createPagination das Feld für die Seitenzahl in die Navigation eingefügt.
-navigation.append(createPagination());
-const pagination = document.querySelector('[data-js="pagination"]'); // Diese Variable funktioniert nur, wenn sie hier unten erzeugt wird!
-function updatePage() {
-  pagination.textContent = `${page} / ${maxPage}`;
-}
-
-// Hier wird mit createButton und der passenden Callback-Function der next-Button erzeugt und in die Navigation eingefügt.
-navigation.append(createButton(nextNavigation));
-
-// --- END NAVIGATION
-
-// CREATE SEARCH BAR
-
-function onSubmit(event) {
+// create onSubmit function
+const onSubmit = event => {
   event.preventDefault();
   page = 1;
   searchQuery = event.target.elements.query.value.toLowerCase();
   fetchCharacters();
-}
+};
 
-//const searchBarTest = createSearchBar(onSubmit);
-searchBarContainer.append(createSearchBar(onSubmit));
-
-// --- END SEARCH BAR
+// create searchbar
+const searchBar = createSearchBar(onSubmit);
+searchBarContainer.append(searchBar);
 
 fetchCharacters();
 
